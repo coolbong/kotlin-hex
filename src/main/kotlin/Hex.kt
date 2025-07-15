@@ -30,7 +30,7 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
     /**
      * ASCII 문자열로 변환
      */
-    fun toAscii(): String = String(bytes, Charset.forName("UTF-8"))
+    fun toAscii(): String = String(bytes, Charset.forName("ASCII"))
 
 
     /**
@@ -88,6 +88,56 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
         return bytes.contentEquals(other.bytes)
     }
 
+    fun left(length: Int): Hex {
+        require(length >= 0) { "Length must be non-negative" }
+
+        // 요청된 길이가 현재 길이보다 크면 현재 Hex 반환
+        if (length >= size) return this
+
+        // 왼쪽부터 지정된 길이만큼 자름
+        return Hex(toByteArray().copyOfRange(0, length))
+    }
+
+    fun right(length: Int): Hex {
+        require(length >= 0) { "Length must be non-negative" }
+
+        // 요청된 길이가 현재 길이보다 크면 현재 Hex 반환
+        if (length >= size) return this
+
+        // 오른쪽부터 지정된 길이만큼 자름
+        return Hex(toByteArray().copyOfRange(size - length, size))
+    }
+
+    fun mid(start: Int, length: Int = size - start): Hex {
+        require(start >= 0) { "Start index must be non-negative" }
+        require(length >= 0) { "Length must be non-negative" }
+        require(start + length <= size) { "Start index and length exceed Hex size" }
+
+        // 시작 인덱스부터 지정된 길이만큼 자름
+        return Hex(toByteArray().copyOfRange(start, start + length))
+    }
+
+    fun lpad(length: Int, padByte: Byte = 0x00): Hex {
+        //require(length >= size) { "Padding length must be greater than or equal to current hex length" }
+        if (length <= size) return this
+
+        val paddingLength = length - size
+        val paddingBytes = ByteArray(paddingLength) { padByte }
+
+        return Hex(paddingBytes + toByteArray())
+    }
+
+    fun rpad(length: Int, padByte: Byte = 0x00): Hex {
+        //require(length >= size) { "Padding length must be greater than or equal to current hex length" }
+        if (length <= size) return this
+
+        val paddingLength = length - size
+        val paddingBytes = ByteArray(paddingLength) { padByte }
+
+        return Hex(toByteArray() + paddingBytes)
+    }
+
+
     /**
      * 해시 코드
      */
@@ -144,9 +194,28 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
          * ASCII 문자열에서 Hex 객체 생성
          */
         @JvmStatic
-        fun fromAscii(ascii: String): Hex = Hex(ascii.toByteArray(Charset.forName("UTF-8")))
+        fun fromAscii(ascii: String): Hex = Hex(ascii.toByteArray(Charset.forName("ASCII")))
 
+        @JvmStatic
+        fun left(hex: Hex, length: Int): Hex = hex.left(length)
 
+        @JvmStatic
+        fun right(hex: Hex, length: Int): Hex = hex.right(length)
+
+        @JvmStatic
+        fun mid(hex: Hex, start: Int, length: Int): Hex = hex.mid(start, length)
+
+        @JvmStatic
+        fun lpad(hex: Hex, length: Int): Hex = hex.lpad(length)
+
+        @JvmStatic
+        fun lpad(hex: Hex, length: Int, padByte: Byte): Hex = hex.lpad(length, padByte)
+
+        @JvmStatic
+        fun rpad(hex: Hex, length: Int): Hex = hex.rpad(length)
+
+        @JvmStatic
+        fun rpad(hex: Hex, length: Int, padByte: Byte): Hex = hex.rpad(length, padByte)
 
     }
 }
