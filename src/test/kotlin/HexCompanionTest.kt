@@ -21,7 +21,7 @@ class HexCompanionTest {
 
         assertEquals(4, hex.size)
         assertEquals("01020304", hex.toString())
-        assertNotSame(byteArray, hex.toByteArray()) // 복사본인지 확인
+        assertNotSame(byteArray, hex.toBytes()) // 복사본인지 확인
     }
 
     @Test

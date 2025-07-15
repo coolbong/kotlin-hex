@@ -2,6 +2,8 @@ package io.github.coolbong.hex
 
 import java.nio.charset.Charset
 import java.security.MessageDigest
+import kotlin.experimental.and
+import kotlin.experimental.or
 import kotlin.experimental.xor
 
 /**
@@ -25,7 +27,7 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
     /**
      * 바이트 배열로 변환
      */
-    fun toByteArray(): ByteArray = bytes.copyOf()
+    fun toBytes(): ByteArray = bytes.copyOf()
 
     /**
      * ASCII 문자열로 변환
@@ -57,12 +59,19 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
      */
     fun sha256(): Hex = hash("SHA-256")
 
-    /**
-     * XOR 연산
-     */
     infix fun xor(other: Hex): Hex {
         require(this.bytes.size == other.bytes.size) { "Hex sizes must be equal for XOR" }
         return Hex(ByteArray(bytes.size) { (bytes[it] xor other.bytes[it]).toByte() })
+    }
+
+    infix fun or(other: Hex): Hex {
+        require(this.bytes.size == other.bytes.size) { "Hex sizes must be equal for OR" }
+        return Hex(ByteArray(bytes.size) { (bytes[it] or other.bytes[it]).toByte() })
+    }
+
+    infix fun and(other: Hex): Hex {
+        require(this.bytes.size == other.bytes.size) { "Hex sizes must be equal for AND" }
+        return Hex(ByteArray(bytes.size) { (bytes[it] and other.bytes[it]).toByte() })
     }
 
     /**
@@ -95,7 +104,7 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
         if (length >= size) return this
 
         // 왼쪽부터 지정된 길이만큼 자름
-        return Hex(toByteArray().copyOfRange(0, length))
+        return Hex(toBytes().copyOfRange(0, length))
     }
 
     fun right(length: Int): Hex {
@@ -105,7 +114,7 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
         if (length >= size) return this
 
         // 오른쪽부터 지정된 길이만큼 자름
-        return Hex(toByteArray().copyOfRange(size - length, size))
+        return Hex(toBytes().copyOfRange(size - length, size))
     }
 
     fun mid(start: Int, length: Int = size - start): Hex {
@@ -122,7 +131,7 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
         val paddingLength = length - size
         val paddingBytes = ByteArray(paddingLength) { padByte }
 
-        return Hex(paddingBytes + toByteArray())
+        return Hex(paddingBytes + toBytes())
     }
 
     fun rpad(length: Int, padByte: Byte = 0x00): Hex {
@@ -132,7 +141,7 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
         val paddingLength = length - size
         val paddingBytes = ByteArray(paddingLength) { padByte }
 
-        return Hex(toByteArray() + paddingBytes)
+        return Hex(toBytes() + paddingBytes)
     }
 
 
