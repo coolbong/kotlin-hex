@@ -7,7 +7,7 @@ import kotlin.experimental.or
 import kotlin.experimental.xor
 
 /**
- * 16진수 데이터를 다루는 불변 클래스
+ * 16진수 데이터를 다루는 클래스
  *
  * @property bytes 내부 바이트 배열
  */
@@ -45,11 +45,6 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
     }
 
     /**
-     * 다른 Hex와 연결
-     */
-    operator fun plus(other: Hex): Hex = Hex(this.bytes + other.bytes)
-
-    /**
      * MD5 해시 생성
      */
     fun md5(): Hex = hash("MD5")
@@ -58,6 +53,14 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
      * SHA-256 해시 생성
      */
     fun sha256(): Hex = hash("SHA-256")
+
+    /**
+     * 내부 해시 메서드
+     */
+    private fun hash(algorithm: String): Hex {
+        val digest = MessageDigest.getInstance(algorithm)
+        return Hex(digest.digest(bytes))
+    }
 
     infix fun xor(other: Hex): Hex {
         require(this.bytes.size == other.bytes.size) { "Hex sizes must be equal for XOR" }
@@ -74,13 +77,6 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
         return Hex(ByteArray(bytes.size) { (bytes[it] and other.bytes[it]).toByte() })
     }
 
-    /**
-     * 내부 해시 메서드
-     */
-    private fun hash(algorithm: String): Hex {
-        val digest = MessageDigest.getInstance(algorithm)
-        return Hex(digest.digest(bytes))
-    }
 
     /**
      * 16진수 값 비교
@@ -123,6 +119,23 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
         return Hex(bytes.copyOfRange(start, start + length))
     }
 
+    fun u1(index: Int): Hex {
+        require(index in bytes.indices) { "Index out of bounds" }
+        return Hex(byteArrayOf(bytes[index]))
+    }
+
+    fun u2(index: Int): Hex {
+        require(index in bytes.indices) { "Index out of bounds" }
+        require(index + 1 in bytes.indices) { "Index out of bounds" }
+        return Hex(byteArrayOf(bytes[index], bytes[index + 1]))
+    }
+
+    fun un(index: Int, length: Int): Hex {
+        require(index >= 0 && index < bytes.size) { "Invalid start index" }
+        require(length >= 0 && index + length <= bytes.size) { "Invalid length" }
+        return Hex(bytes.copyOfRange(index, index + length))
+    }
+
 
     fun lpad(length: Int, padByte: Byte = 0x00): Hex {
         //require(length >= size) { "Padding length must be greater than or equal to current hex length" }
@@ -144,6 +157,31 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
         return Hex(toBytes() + paddingBytes)
     }
 
+    // operator overload
+    // 연산자 오버로딩: + 연산자로 두 Hex 객체 연결
+    operator fun plus(other: Hex): Hex = Hex(this.bytes + other.bytes)
+
+    operator fun get(index: Int): Int {
+        require(index >= 0 && index < bytes.size) { "Index out of bounds" }
+        return bytes[index].toInt() and 0xff
+    }
+
+    operator fun set(index: Int, value: Byte) {
+        bytes[index] = value
+    }
+
+    operator fun set(index: Int, value: UByte) {
+        bytes[index] = value.toByte()
+    }
+
+    operator fun set(index: Int, value: Short) {
+        bytes[index] = value.toByte()
+    }
+
+    // 연산자 오버로딩: set 연산자로 특정 인덱스의 Int 값 설정
+    operator fun set(index: Int, value: Int) {
+        bytes[index] = value.toByte()
+    }
 
     /**
      * 해시 코드
@@ -186,7 +224,10 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
          */
         @JvmStatic
         fun from(hexString: String): Hex {
-            // 공백과 16진수가 아닌 문자 제거
+            if (hexString.isEmpty()) {
+                return Hex(byteArrayOf())
+            }
+
             val cleanHexString = hexString.replace("\\s".toRegex(), "")
 
             require(cleanHexString.length % 2 == 0) { "Hex string must have an even length" }
