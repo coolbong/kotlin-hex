@@ -109,13 +109,11 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
     }
 
     fun mid(start: Int, length: Int = size - start): Hex {
-        require(start >= 0) { "Start index must be non-negative" }
-        require(length >= 0) { "Length must be non-negative" }
-        require(start + length <= size) { "Start index and length exceed Hex size" }
-
-        // 시작 인덱스부터 지정된 길이만큼 자름
-        return Hex(toByteArray().copyOfRange(start, start + length))
+        require(start >= 0 && start < bytes.size) { "Invalid start index" }
+        require(length >= 0 && start + length <= bytes.size) { "Invalid length" }
+        return Hex(bytes.copyOfRange(start, start + length))
     }
+
 
     fun lpad(length: Int, padByte: Byte = 0x00): Hex {
         //require(length >= size) { "Padding length must be greater than or equal to current hex length" }
