@@ -167,19 +167,23 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
     }
 
     operator fun set(index: Int, value: Byte) {
+        require(index in bytes.indices) { "Index out of bounds" }
         bytes[index] = value
     }
 
     operator fun set(index: Int, value: UByte) {
+        require(index in bytes.indices) { "Index out of bounds" }
         bytes[index] = value.toByte()
     }
 
     operator fun set(index: Int, value: Short) {
+        require(index in bytes.indices) { "Index out of bounds" }
         bytes[index] = value.toByte()
     }
 
     // 연산자 오버로딩: set 연산자로 특정 인덱스의 Int 값 설정
     operator fun set(index: Int, value: Int) {
+        require(index in bytes.indices) { "Index out of bounds" }
         bytes[index] = value.toByte()
     }
 

@@ -41,6 +41,7 @@ class HexOperatorOverloadTest {
 
         assertEquals(0x12, hex[0])
         assertEquals(0x34, hex[1])
+        assertThrows<IllegalArgumentException> { hex[2] }
     }
 
     @Test
