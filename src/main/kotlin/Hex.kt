@@ -158,7 +158,6 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
     }
 
     // operator overload
-    // 연산자 오버로딩: + 연산자로 두 Hex 객체 연결
     operator fun plus(other: Hex): Hex = Hex(this.bytes + other.bytes)
 
     operator fun get(index: Int): Int {
@@ -181,7 +180,6 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
         bytes[index] = value.toByte()
     }
 
-    // 연산자 오버로딩: set 연산자로 특정 인덱스의 Int 값 설정
     operator fun set(index: Int, value: Int) {
         require(index in bytes.indices) { "Index out of bounds" }
         bytes[index] = value.toByte()
