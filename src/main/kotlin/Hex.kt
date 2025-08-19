@@ -50,6 +50,11 @@ data class Hex private constructor(private val bytes: ByteArray) : Comparable<He
     fun md5(): Hex = hash("MD5")
 
     /**
+     * SHA-1 해시 생성
+     */
+    fun sha1(): Hex = hash("SHA-1")
+
+    /**
      * SHA-256 해시 생성
      */
     fun sha256(): Hex = hash("SHA-256")
