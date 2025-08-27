@@ -3,12 +3,11 @@ package io.github.coolbong.hex
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
-import kotlin.toString
 
 class HexLeftMidRightTest {
     @Test
     fun `left should return correct substring`() {
-        val hex = Hex.from("1234567890")
+        val hex = Hex3.from("1234567890")
 
         val leftPart1 = hex.left(4)
         assertEquals("12345678", leftPart1.toString())
@@ -21,7 +20,7 @@ class HexLeftMidRightTest {
 
     @Test
     fun `right should return correct substring`() {
-        val hex = Hex.from("1234567890")
+        val hex = Hex3.from("1234567890")
 
         val rightPart1 = hex.right(4)
         assertEquals("34567890", rightPart1.toString())
@@ -34,7 +33,7 @@ class HexLeftMidRightTest {
 
     @Test
     fun `mid should return correct substring`() {
-        val hex = Hex.from("112233445566")
+        val hex = Hex3.from("112233445566")
 
         // When & Then
         assertEquals("2233", hex.mid(1, 2).toString())
@@ -53,7 +52,7 @@ class HexLeftMidRightTest {
 
     @Test
     fun `mid should throw exception for invalid parameters`() {
-        val hex = Hex.from("1234567890")
+        val hex = Hex3.from("1234567890")
 
         assertThrows<IllegalArgumentException> { hex.mid(-1, 4) }
         assertThrows<IllegalArgumentException> { hex.mid(0, -1) }

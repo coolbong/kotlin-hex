@@ -7,17 +7,27 @@ import kotlin.test.assertEquals
 class HexOperatorOverloadTest {
 
     @Test
-    fun `plus should concatenate two Hex values`() {
-        val hex1 = Hex.from("1234")
-        val hex2 = Hex.from("5678")
+    fun `plus should concatenate two Hex values 1`() {
+        val hex1 = Hex3.from("AABB")
+        val hex2 = Hex3.from("CCDD")
+        val result = hex1 + hex2
+
+        assertEquals(0xAA, result[0])
+        assertEquals("AABBCCDD", result.toString())
+    }
+
+    @Test
+    fun `plus should concatenate two Hex values 2`() {
+        val hex1 = Hex3.from("1234")
+        val hex2 = Hex3.from("5678")
         val result = hex1 + hex2
         assertEquals("12345678", result.toString())
     }
 
     @Test
     fun `plus should work with empty Hex`() {
-        val hex1 = Hex.from("1234")
-        val hex2 = Hex.from("")
+        val hex1 = Hex3.from("1234")
+        val hex2 = Hex3.from("")
         val result1 = hex1 + hex2
         val result2 = hex2 + hex1
 
@@ -27,9 +37,9 @@ class HexOperatorOverloadTest {
 
     @Test
     fun `plus should handle multiple Hex concatenations`() {
-        val hex1 = Hex.from("12")
-        val hex2 = Hex.from("34")
-        val hex3 = Hex.from("56")
+        val hex1 = Hex3.from("12")
+        val hex2 = Hex3.from("34")
+        val hex3 = Hex3.from("56")
         val result = hex1 + hex2 + hex3
         assertEquals("123456", result.toString())
     }
@@ -37,7 +47,7 @@ class HexOperatorOverloadTest {
 
     @Test
     fun `get operator should return correct byte`() {
-        val hex = Hex.from("1234")
+        val hex = Hex3.from("1234")
 
         assertEquals(0x12, hex[0])
         assertEquals(0x34, hex[1])
@@ -46,7 +56,7 @@ class HexOperatorOverloadTest {
 
     @Test
     fun `set operator should create new Hex with updated byte`() {
-        val hex = Hex.from("1234")
+        val hex = Hex3.from("1234")
 
         //val modifiedHex = hex[1] = 0xFF
         hex[1] = 0xff
