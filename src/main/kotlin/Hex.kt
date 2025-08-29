@@ -1,5 +1,7 @@
 package io.github.coolbong.hex
 
+import java.nio.charset.Charset
+
 
 open class Hex protected constructor(protected val data: ByteArray) : Comparable<Hex> {
 
@@ -7,6 +9,34 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
 
     val size: Int get() = data.size
     fun isEmpty(): Boolean = data.isEmpty()
+
+
+    fun left(length: Int): Hex {
+        require(length >= 0) { "Length must be non-negative" }
+        if (length >= size) return Hex(data.copyOf())
+        return Hex(data.copyOfRange(0, length))
+    }
+
+    /**
+     * Safe subrange extraction.
+     *
+     * @param start starting index (0-based)
+     * @param length optional length (default = until end of array).
+     *        If (start + length) exceeds size, it will be clamped automatically.
+     * @return new Hex instance containing the subrange.
+     *
+     * Example:
+     *   Hex.from("A0B1C2D3").mid(1, 2) -> "B1C2"
+     *   Hex.from("A0B1C2D3").mid(2) -> "C2D3"
+     *   Hex.from("A0B1C2D3").mid(5, 10) -> "" (empty Hex, safe)
+     */
+    @JvmOverloads
+    fun mid(start: Int, length: Int = size - start): Hex {
+        if (start !in 0..<size) return empty()
+        val safeLength = length.coerceAtMost(size - start).coerceAtLeast(0)
+        return from(data, start, safeLength)
+    }
+
 
     /**
      * Returns the internal value as a hexadecimal string.
@@ -123,6 +153,15 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
             require(offset + length <= bytes.size) { "Offset and length must be within byte array bounds" }
             return Hex(bytes.copyOfRange(offset, offset + length))
         }
+
+
+        /**
+         *
+         * Creates a Hex from a byte array.
+         * @return a new Hex instance
+         */
+        @JvmStatic
+        fun fromAscii(ascii: String): Hex = Hex(ascii.toByteArray(Charset.forName("ASCII")))
 
         fun isHex(s: String): Boolean =
             s.all { it.isDigit() || it in 'a'..'f' || it in 'A'..'F' }
