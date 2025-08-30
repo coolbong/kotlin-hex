@@ -6,15 +6,33 @@ import java.nio.charset.Charset
 open class Hex protected constructor(protected val data: ByteArray) : Comparable<Hex> {
 
 
-
+    /**
+     * Returns the number of bytes in this Hex object.
+     *
+     * @return Byte array length
+     */
     val size: Int get() = data.size
+
+    /**
+     * Checks if this Hex object contains no bytes.
+     *
+     * @return true if empty, false otherwise
+     */
     fun isEmpty(): Boolean = data.isEmpty()
 
 
+    /**
+     * Returns a new Hex object containing the leftmost bytes.
+     *
+     * @param length Number of bytes to take from the left.
+     *               If length is greater than size, it will return the full Hex.
+     *               If length <= 0, it will return an empty Hex.
+     * @return A new Hex containing the leftmost `length` bytes.
+     */
     fun left(length: Int): Hex {
-        require(length >= 0) { "Length must be non-negative" }
-        if (length >= size) return Hex(data.copyOf())
-        return Hex(data.copyOfRange(0, length))
+        if (length <= 0) return empty()
+        val safeLength = minOf(length, size)
+        return Hex(data.copyOfRange(0, safeLength))
     }
 
     /**
@@ -32,9 +50,27 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
      */
     @JvmOverloads
     fun mid(start: Int, length: Int = size - start): Hex {
+        require(start >= 0) { "start must be non-negative" }
+        require(length >= 0) { "Length must be non-negative" }
+
         if (start !in 0..<size) return empty()
-        val safeLength = length.coerceAtMost(size - start).coerceAtLeast(0)
-        return from(data, start, safeLength)
+        val end = (start + length).coerceAtMost(size)
+        return Hex(data.copyOfRange(start, end))
+    }
+
+
+    /**
+     * Returns a new Hex object containing the rightmost bytes.
+     *
+     * @param length Number of bytes to take from the right.
+     *               If length is greater than size, it will return the full Hex.
+     *               If length <= 0, it will return an empty Hex.
+     * @return A new Hex containing the rightmost `length` bytes.
+     */
+    fun right(length: Int): Hex {
+        if (length <= 0) return empty()
+        val safeLength = minOf(length, size)
+        return Hex(data.copyOfRange(size - safeLength, size))
     }
 
 
