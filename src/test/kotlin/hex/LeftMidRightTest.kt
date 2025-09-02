@@ -40,6 +40,14 @@ class LeftMidRightTest {
         val hex2 = hex.right(10)
         assertEquals("1234567890", hex2.toString())
         assertEquals(5, hex2.size)
+
+        val hex3 = hex.right(2)
+        assertEquals("7890", hex3.toString())
+        assertEquals(2, hex3.size)
+        Assertions.assertEquals(0x78.toByte(), hex3[0])
+        Assertions.assertEquals(0x90.toByte(), hex3[1])
+
+
     }
 
     @Test

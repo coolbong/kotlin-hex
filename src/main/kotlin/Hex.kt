@@ -75,6 +75,38 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
 
 
     /**
+     * Left-pad this Hex with the given byte until it reaches the specified total length.
+     *
+     * @param totalLength The desired total length of the Hex in bytes.
+     *                    If totalLength <= current size, the original Hex is returned.
+     * @param padByte The byte used for padding. Default is 0x00.
+     * @return A new Hex object left-padded to totalLength.
+     */
+    @JvmOverloads
+    fun lpad(totalLength: Int, padByte: Byte = 0x00): Hex {
+        if (totalLength <= size) return this
+        val padding = ByteArray(totalLength - size) { padByte }
+        return Hex(padding + data)
+    }
+
+    /**
+     * Right-pad this Hex with the given byte until it reaches the specified total length.
+     *
+     * @param totalLength The desired total length of the Hex in bytes.
+     *                    If totalLength <= current size, the original Hex is returned.
+     * @param padByte The byte used for padding. Default is 0x00.
+     * @return A new Hex object right-padded to totalLength.
+     */
+    @JvmOverloads
+    fun rpad(totalLength: Int, padByte: Byte = 0x00): Hex {
+        if (totalLength <= size) return this
+        val padding = ByteArray(totalLength - size) { padByte }
+        return Hex(data + padding)
+    }
+
+
+
+    /**
      * Returns the internal value as a hexadecimal string.
      *
      * @return Hexadecimal string
