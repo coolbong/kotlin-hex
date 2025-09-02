@@ -104,6 +104,20 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
         return Hex(data + padding)
     }
 
+    /**
+     * Slice the Hex value using Python-like slicing semantics.
+     *
+     * @param start The start index (inclusive). Defaults to 0.
+     * @param end   The end index (exclusive). Defaults to size.
+     * @return A new Hex containing the sliced range. If indices are out of bounds,
+     *         they are adjusted to the valid range. If start >= end, returns empty.
+     */
+    fun slice(start: Int = 0, end: Int = size): Hex {
+        val safeStart = start.coerceAtLeast(0).coerceAtMost(size)
+        val safeEnd = end.coerceAtLeast(0).coerceAtMost(size)
+        if (safeStart >= safeEnd) return Hex.empty()
+        return Hex(data.copyOfRange(safeStart, safeEnd))
+    }
 
 
     /**

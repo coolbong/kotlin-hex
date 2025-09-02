@@ -67,4 +67,61 @@ class BaseTest {
         assertThrows<IllegalArgumentException> { hex[2] }
     }
 
+
+    @Test
+    fun `slice should return range from start to end`() {
+        val h = Hex.from("A1B2C3D4E5")
+        val sliced = h.slice(1, 3)
+        assertEquals("B2C3", sliced.toString())
+    }
+
+    @Test
+    fun `slice should return from start index to end of string when only start is given`() {
+        val h = Hex.from("A1B2C3D4E5")
+        val sliced = h.slice(2)
+        assertEquals("C3D4E5", sliced.toString())
+    }
+
+    @Test
+    fun `slice should return from beginning when end is specified`() {
+        val h = Hex.from("A1B2C3D4E5")
+        val sliced = h.slice(0, 3)
+        assertEquals("A1B2C3", sliced.toString())
+    }
+
+    @Test
+    fun `slice should return empty when start equals end`() {
+        val h = Hex.from("A1B2C3D4E5")
+        val sliced = h.slice(2, 2)
+        assertEquals("", sliced.toString())
+    }
+
+    @Test
+    fun `slice should handle end index beyond length`() {
+        val h = Hex.from("A1B2C3D4E5")
+        val sliced = h.slice(3, 20)
+        assertEquals("D4E5", sliced.toString())
+    }
+
+    @Test
+    fun `slice should return empty when start is beyond length`() {
+        val h = Hex.from("A1B2C3D4E5")
+        val sliced = h.slice(10, 20)
+        assertEquals("", sliced.toString())
+    }
+
+    @Test
+    fun `slice should treat negative start as zero`() {
+        val h = Hex.from("A1B2C3D4E5")
+        val sliced = h.slice(-3, 3)
+        assertEquals("A1B2C3", sliced.toString())
+    }
+
+    @Test
+    fun `slice should return empty when end is negative`() {
+        val h = Hex.from("A1B2C3D4E5")
+        val sliced = h.slice(0, -2)
+        assertEquals("", sliced.toString())
+    }
+
 }
