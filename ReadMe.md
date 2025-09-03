@@ -1,20 +1,56 @@
 # Hex Library for Kotlin
 
-## 소개
+A lightweight immutable `Hex` utility class written in **Kotlin**, designed for safe and convenient handling of hexadecimal strings and byte arrays.  
+This class is fully interoperable with **Java**.
 
-`Hex`는 Kotlin에서 16진수 데이터를 쉽고 안전하게 다룰 수 있는 라이브러리입니다.
-다양한 형식의 데이터를 16진수로 변환하고, 16진수 데이터를 쉽게 조작할 수 있는 기능을 제공합니다.
+---
 
+## Features
 
-## 주요 기능
+- Immutable design (internal bytes are safely copied)
+- Factory methods for creating `Hex` objects from hex strings or byte arrays
+- Validation of hex strings (ignores whitespace, supports uppercase/lowercase)
+- Comparable support for sorting (`Comparable<Hex>`)
+- Core operations:
+    - `+` operator for concatenation
+    - Bitwise operations (`notOp`, `andOp`, `orOp`, `xorOp`)
+    - `mid`, `left`, `right`, `slice` for sub-hex extraction
+    - `lpad`, `rpad` for padding
+- Safe handling: no exceptions for out-of-range slicing (returns as much as possible)
 
-- 다양한 소스(바이트 배열, 문자열)에서 Hex 객체 생성
-- 16진수 문자열 변환
-- 바이트 배열의 특정 부분 선택
+---
 
+## Example (Kotlin)
 
+```kotlin
+fun main() {
+    val hex1 = Hex.from("0A0B0C")
+    val hex2 = Hex.from("010203")
 
-## 설치
+    println(hex1)                     // "0A0B0C"
+    println(hex1.toByteArray().size)  // 3
+
+    // Concatenation
+    val combined = hex1 + hex2
+    println(combined)                 // "0A0B0C010203"
+
+    // Bitwise operations
+    val anded = hex1 and hex2
+    println(anded)                    // "000200"
+
+    val xored = hex1 xor hex2
+    println(xored)                    // "0B090F"
+
+    // Sub-hex
+    println(combined.mid(2, 3))       // "0B0C01"
+    println(combined.left(4))         // "0A0B0C01"
+    println(combined.right(2))        // "0203"
+
+    // Padding
+    println(hex1.lpad(5, 0xFF.toByte())) // "FFFF0A0B0C"
+    println(hex1.rpad(5, 0x00.toByte())) // "0A0B0C0000"
+}
+```
 
 ### Maven
 ```xml

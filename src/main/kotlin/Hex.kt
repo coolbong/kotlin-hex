@@ -5,6 +5,8 @@ import kotlin.experimental.inv
 
 /**
  * Immutable Hex class for handling hexadecimal strings and byte arrays.
+ * Provides utilities for parsing, formatting, slicing, padding, and bitwise operations.
+ *
  */
 open class Hex protected constructor(protected val data: ByteArray) : Comparable<Hex> {
 
