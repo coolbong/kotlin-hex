@@ -139,6 +139,7 @@ class BaseTest {
         val h = Hex.from("A1B2")
         val result = !h
         assertEquals("5E4D", result.toString())
+        assertEquals("5E4D", h.inverse().toString())
     }
 
     @Test
@@ -154,6 +155,7 @@ class BaseTest {
         val b = Hex.from("0FF0")
         val result = a and b
         assertEquals("00F0", result.toString())
+        assertEquals("00F0", a.andOp(b).toString())
     }
 
     @Test
@@ -162,6 +164,7 @@ class BaseTest {
         val b = Hex.from("0FF0")
         val result = a or b
         assertEquals("FFF0", result.toString())
+        assertEquals("FFF0", a.orOp(b).toString())
     }
 
     @Test
@@ -170,6 +173,7 @@ class BaseTest {
         val b = Hex.from("0FF0")
         val result = a xor b
         assertEquals("FF00", result.toString())
+        assertEquals("FF00", a.xorOp(b).toString())
     }
 
     @Test

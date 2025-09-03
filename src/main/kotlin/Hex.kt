@@ -119,7 +119,7 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
     fun slice(start: Int = 0, end: Int = size): Hex {
         val safeStart = start.coerceAtLeast(0).coerceAtMost(size)
         val safeEnd = end.coerceAtLeast(0).coerceAtMost(size)
-        if (safeStart >= safeEnd) return Hex.empty()
+        if (safeStart >= safeEnd) return empty()
         return Hex(data.copyOfRange(safeStart, safeEnd))
     }
 
