@@ -1,10 +1,12 @@
 package io.github.coolbong.hex
 
 import java.nio.charset.Charset
+import kotlin.experimental.inv
 
-
+/**
+ * Immutable Hex class for handling hexadecimal strings and byte arrays.
+ */
 open class Hex protected constructor(protected val data: ByteArray) : Comparable<Hex> {
-
 
     /**
      * Returns the number of bytes in this Hex object.
@@ -132,10 +134,9 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
     /**
      * Returns the internal value as a byte array.
      *
-     * @return byte array
+     * @return A copy of the byte array.
      */
     fun toBytes(): ByteArray = data.copyOf()
-
 
 
     /**
@@ -187,6 +188,83 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
         //return data[index].toInt() and 0xff
         return data[index]
     }
+
+    /**
+     * Bitwise NOT operation for this Hex(~this).
+     * Each byte is inverted (all bits flipped).
+     *
+     * @return A new Hex object with all bits inverted.
+     */
+    operator fun not(): Hex {
+        if (isEmpty()) return empty()
+        val result = ByteArray(size)
+        for (i in data.indices) {
+            result[i] = data[i].inv()
+        }
+        return Hex(result)
+    }
+
+    /**
+     * Bitwise AND operation between two Hex values.
+     * Operates up to the minimum length of the two Hex values.
+     *
+     * @param other The other Hex value.
+     * @return A new Hex containing the result of bitwise AND.
+     */
+    infix fun and(other: Hex): Hex {
+        require(size == other.size) {
+            "Hex length mismatch: $size vs ${other.size}"
+        }
+        val result = ByteArray(size)
+        for (i in 0 until size) {
+            result[i] = (data[i].toInt() and other.data[i].toInt()).toByte()
+        }
+        return Hex(result)
+    }
+
+    /**
+     * Bitwise OR operation between two Hex values.
+     * Operates up to the minimum length of the two Hex values.
+     *
+     * @param other The other Hex value.
+     * @return A new Hex containing the result of bitwise OR.
+     */
+    infix fun or(other: Hex): Hex {
+        require(size == other.size) {
+            "Hex length mismatch: $size vs ${other.size}"
+        }
+        val result = ByteArray(size)
+        for (i in 0 until size) {
+            result[i] = (data[i].toInt() or other.data[i].toInt()).toByte()
+        }
+        return Hex(result)
+    }
+
+    /**
+     * Bitwise XOR operation between two Hex values.
+     * Operates up to the minimum length of the two Hex values.
+     *
+     * @param other The other Hex value.
+     * @return A new Hex containing the result of bitwise XOR.
+     */
+    infix fun xor(other: Hex): Hex {
+        require(size == other.size) {
+            "Hex length mismatch: $size vs ${other.size}"
+        }
+        val result = ByteArray(size)
+        for (i in 0 until size) {
+            result[i] = (data[i].toInt() xor other.data[i].toInt()).toByte()
+        }
+        return Hex(result)
+    }
+
+    // for java api
+    fun inverse(): Hex = not()
+    fun andOp(other: Hex): Hex = and(other)
+    fun orOp(other: Hex): Hex = or(other)
+    fun xorOp(other: Hex): Hex = xor(other)
+
+
 
     companion object {
 

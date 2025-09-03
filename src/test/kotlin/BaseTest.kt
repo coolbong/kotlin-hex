@@ -1,11 +1,14 @@
-package io.github.coolbong.hex.hex
+package io.github.coolbong.hex
 
-import io.github.coolbong.hex.Hex
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class BaseTest {
+
+
+
     @Test
     fun `plus should concatenate two Hex values 1`() {
         val hex1 = Hex.from("AABB")
@@ -124,4 +127,93 @@ class BaseTest {
         assertEquals("", sliced.toString())
     }
 
+    @Test
+    fun `not should flip all bits`() {
+        val h = Hex.from("00FF")
+        val result = !h
+        assertEquals("FF00", result.toString())
+    }
+
+    @Test
+    fun `not should invert each byte independently`() {
+        val h = Hex.from("A1B2")
+        val result = !h
+        assertEquals("5E4D", result.toString())
+    }
+
+    @Test
+    fun `not should return empty when applied to empty Hex`() {
+        val h = Hex.empty()
+        val result = !h
+        assertEquals("", result.toString())
+    }
+
+    @Test
+    fun `and should compute bitwise AND`() {
+        val a = Hex.from("F0F0")
+        val b = Hex.from("0FF0")
+        val result = a and b
+        assertEquals("00F0", result.toString())
+    }
+
+    @Test
+    fun `or should compute bitwise OR`() {
+        val a = Hex.from("F0F0")
+        val b = Hex.from("0FF0")
+        val result = a or b
+        assertEquals("FFF0", result.toString())
+    }
+
+    @Test
+    fun `xor should compute bitwise XOR`() {
+        val a = Hex.from("F0F0")
+        val b = Hex.from("0FF0")
+        val result = a xor b
+        assertEquals("FF00", result.toString())
+    }
+
+    @Test
+    fun `xor operation should work correctly`() {
+        val hex1 = Hex.from("FF00")
+        val hex2 = Hex.from("00FF")
+
+        val result = hex1 xor hex2
+        assertEquals("FFFF", result.toString())
+    }
+
+    @Test
+    fun `or operation should work correctly`() {
+        val hex1 = Hex.from("1010")
+        val hex2 = Hex.from("0101")
+
+        val result = hex1 or hex2
+        assertEquals("1111", result.toString())
+    }
+
+    @Test
+    fun `and operation should work correctly`() {
+        val hex1 = Hex.from("1100")
+        val hex2 = Hex.from("1010")
+
+        val result = hex1 and hex2
+        assertEquals("1000", result.toString())
+    }
+
+    @Test
+    fun `bitwise ops should throw when lengths differ`() {
+        val a = Hex.from("FFFF")
+        val b = Hex.from("0F")
+        assertFailsWith<IllegalArgumentException> { a and b }
+        assertFailsWith<IllegalArgumentException> { a or b }
+        assertFailsWith<IllegalArgumentException> { a xor b }
+    }
+
+    @Test
+    fun `bitwise ops should return empty when both are empty`() {
+        val a = Hex.empty()
+        val b = Hex.empty()
+        assertEquals("", (a and b).toString())
+        assertEquals("", (a or b).toString())
+        assertEquals("", (a xor b).toString())
+    }
 }

@@ -1,6 +1,5 @@
-package io.github.coolbong.hex.hex
+package io.github.coolbong.hex
 
-import io.github.coolbong.hex.Hex
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

@@ -1,7 +1,5 @@
-package io.github.coolbong.hex.hex
+package io.github.coolbong.hex
 
-import io.github.coolbong.hex.Hex
-import io.github.coolbong.hex.Hex3
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotSame
