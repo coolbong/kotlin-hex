@@ -42,7 +42,7 @@ fun main() {
     println(xored)                    // "0B090F"
 
     // Sub-hex
-    println(combined.mid(2, 3))       // "0B0C01"
+    println(combined.mid(2, 3))       // "0C0102"
     println(combined.left(4))         // "0A0B0C01"
     println(combined.right(2))        // "0203"
 
@@ -51,6 +51,42 @@ fun main() {
     println(hex1.rpad(5, 0x00.toByte())) // "0A0B0C0000"
 }
 ```
+
+
+## API Overview
+### Creation
+
+- Hex.from(String hex) → Create from hex string
+- Hex.from(ByteArray bytes) → Create from byte array
+- Hex.from(ByteArray bytes, int offset, int length) → Create from subset of byte array 
+- Hex.empty() → Create an empty hex
+
+### Methods
+
+- boolean isEmpty()
+- int size()
+- ByteArray toBytes()
+- String toString() → Returns hex string
+
+- Hex mid(int start)
+- Hex mid(int start, int length)
+- Hex left(int length)
+- Hex right(int length)
+- Hex slice(int start, int end)
+
+### Padding
+
+- Hex lpad(int length, byte padByte)
+- Hex rpad(int length, byte padByte)
+
+### Operators
+
+- Hex + Hex
+- !Hex
+- Hex and Hex
+- Hex or Hex
+- Hex xor Hex
+
 
 ### Maven
 ```xml

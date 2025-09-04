@@ -4,9 +4,14 @@ import java.nio.charset.Charset
 import kotlin.experimental.inv
 
 /**
- * Immutable Hex class for handling hexadecimal strings and byte arrays.
- * Provides utilities for parsing, formatting, slicing, padding, and bitwise operations.
+ * Immutable Hex utility class for safely handling hexadecimal strings and byte arrays.
  *
+ * Features:
+ * - Immutable design
+ * - Factory methods for creating from hex string or byte array
+ * - Safe sub-hex operations (mid, left, right, slice)
+ * - Bitwise operations (notOp, andOp, orOp, xorOp)
+ * - Comparable for natural ordering
  */
 open class Hex protected constructor(protected val data: ByteArray) : Comparable<Hex> {
 
@@ -23,6 +28,13 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
      * @return true if empty, false otherwise
      */
     fun isEmpty(): Boolean = data.isEmpty()
+
+    /**
+     * Index of the last element, or -1 if empty.
+     *
+     * @return last index of byte array.
+     */
+    val lastIndex: Int get() = if (data.isEmpty()) -1 else data.size - 1
 
 
     /**
@@ -153,7 +165,7 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
             val diff = (this.data[i].toInt() and 0xFF) - (other.data[i].toInt() and 0xFF)
             if (diff != 0) return diff
         }
-        return this.data.size - other.data.size
+        return this.size.compareTo(other.size)
     }
 
     /**
@@ -192,7 +204,7 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
     }
 
     /**
-     * Bitwise NOT operation for this Hex(~this).
+     * Bitwise NOT operation for this Hex.
      * Each byte is inverted (all bits flipped).
      *
      * @return A new Hex object with all bits inverted.

@@ -8,6 +8,17 @@ import kotlin.test.assertFailsWith
 class BaseTest {
 
 
+    @Test
+    fun `size of Hex`() {
+        val h = Hex.from("0011")
+        assertEquals(2, h.size)
+    }
+
+    @Test
+    fun `last index of Hex`() {
+        val h = Hex.from("0011")
+        assertEquals(1, h.lastIndex)
+    }
 
     @Test
     fun `plus should concatenate two Hex values 1`() {
