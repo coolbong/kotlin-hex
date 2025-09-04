@@ -9,6 +9,52 @@ import org.junit.jupiter.api.assertThrows
 
 class CompanionTest {
 
+
+    @Test
+    fun `from(String) should create Hex 1`() {
+        val hex = Hex.from("C8-58-B3-B2-99-DB")
+
+        assertEquals(6, hex.size)
+        assertEquals("C858B3B299DB", hex.toString())
+        assertEquals(0xC8.toByte(), hex[0])
+        assertEquals(0x58.toByte(), hex[1])
+        assertEquals(0xB3.toByte(), hex[2])
+        assertEquals(0xB2.toByte(), hex[3])
+        assertEquals(0x99.toByte(), hex[4])
+        assertEquals(0xDB.toByte(), hex[5])
+    }
+
+    @Test
+    fun `from(String) should create Hex 2`() {
+        val hex = Hex.from("fe80::b952:3794:121e")
+
+        assertEquals(8, hex.size)
+        assertEquals("FE80B9523794121E", hex.toString())
+        assertEquals(0xFE.toByte(), hex[0])
+        assertEquals(0x80.toByte(), hex[1])
+        assertEquals(0xB9.toByte(), hex[2])
+        assertEquals(0x52.toByte(), hex[3])
+        assertEquals(0x37.toByte(), hex[4])
+        assertEquals(0x94.toByte(), hex[5])
+        assertEquals(0x12.toByte(), hex[6])
+        assertEquals(0x1E.toByte(), hex[7])
+    }
+
+    @Test
+    fun `from(String) should create Hex 3`() {
+        val hex = Hex.from("A0 B1 C2 D3 E4 F5")
+
+        assertEquals(6, hex.size)
+        assertEquals("A0B1C2D3E4F5", hex.toString())
+        assertEquals(0xA0.toByte(), hex[0])
+        assertEquals(0xB1.toByte(), hex[1])
+        assertEquals(0xC2.toByte(), hex[2])
+        assertEquals(0xD3.toByte(), hex[3])
+        assertEquals(0xE4.toByte(), hex[4])
+        assertEquals(0xF5.toByte(), hex[5])
+    }
+
+
     @Test
     fun `empty() should create an empty Hex object`() {
         val emptyHex = Hex.empty()
