@@ -231,4 +231,64 @@ class BaseTest {
         assertEquals("", (a or b).toString())
         assertEquals("", (a xor b).toString())
     }
+
+
+    @Test
+    fun `indexOf should return correct index when subsequence exists`() {
+        val hex = Hex.from("112233445566")
+        val sub = Hex.from("3344")
+
+        val index = hex.indexOf(sub)
+
+        assertEquals(2, index, "Subsequence '3344' should be found at index 2")
+    }
+
+    @Test
+    fun `indexOf should return -1 when subsequence does not exist`() {
+        val hex = Hex.from("112233445566")
+        val sub = Hex.from("7788")
+
+        val index = hex.indexOf(sub)
+
+        assertEquals(-1, index, "Subsequence '7788' should not be found")
+    }
+
+    @Test
+    fun `indexOf should return 0 when subsequence is at the beginning`() {
+        val hex = Hex.from("112233445566")
+        val sub = Hex.from("1122")
+
+        val index = hex.indexOf(sub)
+
+        assertEquals(0, index, "Subsequence '1122' should be found at index 0")
+    }
+
+    @Test
+    fun `indexOf should return last valid index when subsequence is at the end`() {
+        val hex = Hex.from("112233445566")
+        val sub = Hex.from("5566")
+
+        val index = hex.indexOf(sub)
+
+        assertEquals(4, index, "Subsequence '5566' should be found at index 4")
+    }
+
+    @Test
+    fun `indexOf should return -1 when subsequence is longer than source`() {
+        val hex = Hex.from("1122")
+        val sub = Hex.from("112233")
+
+        val index = hex.indexOf(sub)
+
+        assertEquals(-1, index, "Subsequence longer than source should not be found")
+    }
+
+    @Test
+    fun `indexOf should return -1 when subsequence is empty`() {
+        val hex = Hex.from("112233")
+
+        val index = hex.indexOf(Hex.empty())
+
+        assertEquals(-1, index, "Empty subsequence should not be found")
+    }
 }

@@ -278,6 +278,68 @@ open class Hex protected constructor(protected val data: ByteArray) : Comparable
     fun orOp(other: Hex): Hex = or(other)
     fun xorOp(other: Hex): Hex = xor(other)
 
+    /**
+     * Returns the index within this {@code Hex} object of the first occurrence
+     * of the specified subsequence. If the subsequence is not found, {@code -1} is returned.
+     *
+     * <p>This method performs a byte-wise search over the internal data.
+     * The returned index corresponds to the position of the first byte
+     * of the matching subsequence in the source {@code Hex}.</p>
+     *
+     * <p>Examples:</p>
+     * <pre>{@code
+     * Hex hex = Hex.from("112233445566");
+     * Hex sub = Hex.from("3344");
+     * int index = hex.indexOf(sub); // returns 2
+     *
+     * Hex notFound = Hex.from("7788");
+     * int missing = hex.indexOf(notFound); // returns -1
+     * }</pre>
+     *
+     * @param needle the subsequence to search for; must not be {@code null}
+     * @param startIndex the index from which to start the search (0-based)
+     * @return the index of the first occurrence of the specified subsequence
+     *         at or after {@code startIndex}, or {@code -1} if it is not found
+     * @throws IllegalArgumentException if {@code startIndex} is negative
+     */
+    @JvmOverloads
+    fun indexOf(needle: Hex, startIndex: Int = 0): Int {
+        require(startIndex >= 0) { "startIndex must not be negative" }
+        val hay = this.data
+        val nee = needle.data
+        //if (nee.isEmpty()) return startIndex.coerceIn(0, hay.size)
+        if (nee.isEmpty()) return -1
+        if (nee.size > hay.size) return -1
+        val lps = buildLps(nee)
+        var i = startIndex.coerceAtLeast(0)
+        var j = 0
+        while (i < hay.size) {
+            if (hay[i] == nee[j]) {
+                i++; j++
+                if (j == nee.size) return i - j
+            } else {
+                j = if (j != 0) lps[j - 1] else { i++; 0 }
+            }
+        }
+        return -1
+    }
+
+    /** KMP LPS 테이블 */
+    private fun buildLps(pat: ByteArray): IntArray {
+        val lps = IntArray(pat.size)
+        var len = 0
+        var i = 1
+        while (i < pat.size) {
+            if (pat[i] == pat[len]) {
+                lps[i++] = ++len
+            } else if (len != 0) {
+                len = lps[len - 1]
+            } else {
+                lps[i++] = 0
+            }
+        }
+        return lps
+    }
 
 
     companion object {
